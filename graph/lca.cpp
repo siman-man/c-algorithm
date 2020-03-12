@@ -82,13 +82,13 @@ public:
   vector <vector<int> > G;
   StaticRMQ rmq;
 
-  LCA(int N, vector <vector<int> > _G) {
+  LCA(int N, int root, vector <vector<int> > _G) {
     G = _G;
     int k = 0;
     vs = vector<int>(2 * N - 1);
     depth = vector<int>(2 * N - 1);
     id = vector<int>(N, -1);
-    dfs(0, -1, 0, k);
+    dfs(root, -1, 0, k);
     rmq.init(k);
 
     for (int i = 0; i < k; ++i) {
@@ -127,7 +127,8 @@ int main() {
     G[p].push_back(i);
   }
 
-  LCA lca(N, G);
+  int root = 0;
+  LCA lca(N, root, G);
   int l, r;
   for (int i = 0; i < Q; ++i) {
     cin >> l >> r;

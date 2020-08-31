@@ -6,8 +6,8 @@ using namespace std;
 typedef long long ll;
 
 // 累積和
-vector<ll> cumulative_sum(vector<int> &A) {
-  vector<ll> res;
+vector <ll> cumulative_sum(vector<int> &A) {
+  vector <ll> res;
   res.push_back(0);
 
   for (int a : A) {
@@ -29,7 +29,7 @@ int main() {
     A.push_back(a);
   }
 
-  vector<ll> RUI = cumulative_sum(A);
+  vector <ll> RUI = cumulative_sum(A);
 
   int l, r;
   for (int i = 0; i < Q; ++i) {

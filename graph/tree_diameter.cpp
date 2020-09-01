@@ -30,7 +30,6 @@ vector <Edge> E[MAX_V];
 struct Node {
   int v;
   ll cost;
-  vector<int> path;
 
   Node(int v = -1, ll cost = -1) {
     this->v = v;
@@ -50,44 +49,69 @@ public:
     E[from].push_back(Edge(to, cost));
   }
 
-  Node diameter(int from = 0) {
+  vector<int> diameter(int from = 0) {
     int u = findFarthestVertex(from);
     int v = findFarthestVertex(u);
 
     return findPath(u, v);
   }
 
-  Node findPath(int from, int to) {
+  ll calcPathCost(vector<int> &path) {
+    ll totalCost = 0;
+
+    for (int i = 0; i < path.size() - 1; ++i) {
+      int u = path[i];
+      int v = path[i + 1];
+
+      for (int j = 0; j < E[u].size(); ++j) {
+        if (E[u][j].to == v) {
+          totalCost += E[u][j].cost;
+        }
+      }
+    }
+
+    return totalCost;
+  }
+
+  vector<int> findPath(int from, int to) {
     queue <Node> que;
-    Node root(from, 0);
-    root.path.push_back(from);
-    que.push(root);
-    bool visited[MAX_V];
+    que.push(Node(from, 0));
+    int parent[nodeCnt];
+    bool visited[nodeCnt];
     memset(visited, false, sizeof(visited));
 
     while (!que.empty()) {
       Node node = que.front();
       que.pop();
 
-      if (visited[node.v]) continue;
       visited[node.v] = true;
 
       if (node.v == to) {
-        return node;
+        vector<int> path;
+        int cur = node.v;
+
+        while (cur != from) {
+          path.push_back(cur);
+          cur = parent[cur];
+        }
+
+        path.push_back(from);
+        reverse(path.begin(), path.end());
+
+        return path;
       }
 
       for (int i = 0; i < E[node.v].size(); ++i) {
         Edge edge = E[node.v][i];
 
-        Node next(edge.to, node.cost + edge.cost);
-        next.path = node.path;
-        next.path.push_back(edge.to);
+        if (visited[edge.to]) continue;
 
-        que.push(next);
+        parent[edge.to] = node.v;
+        que.push(Node(edge.to, node.cost + edge.cost));
       }
     }
 
-    return Node();
+    return vector<int>();
   }
 
 private:
@@ -138,10 +162,9 @@ int main() {
     tree.addEdge(b, a, c);
   }
 
-  Node node = tree.diameter();
-  vector<int> path = node.path;
+  vector<int> path = tree.diameter();
 
-  cout << node.cost << " " << path.size() << endl;
+  cout << tree.calcPathCost(path) << " " << path.size() << endl;
   for (int i = 0; i < path.size(); ++i) {
     cout << path[i];
 

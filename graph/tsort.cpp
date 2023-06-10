@@ -5,17 +5,17 @@
 
 using namespace std;
 
-vector<int> tsort(int v, vector<int> g[], bool zero_index = false) {
+typedef vector <vector<int>> Graph;
+
+vector<int> tsort(Graph G, int start, int end) {
   vector<int> ret;
 
-  int start = zero_index ? 0 : 1;
-  int end = zero_index ? v : v + 1;
   int degree[end];
   memset(degree, 0, sizeof(degree));
 
   for (int from = start; from < end; from++) {
-    for (int i = 0; i < g[from].size(); i++) {
-      int to = g[from][i];
+    for (int i = 0; i < G[from].size(); i++) {
+      int to = G[from][i];
       degree[to]++;
     }
   }
@@ -34,8 +34,8 @@ vector<int> tsort(int v, vector<int> g[], bool zero_index = false) {
 
     ret.push_back(from);
 
-    for (int i = 0; i < g[from].size(); i++) {
-      int to = g[from][i];
+    for (int i = 0; i < G[from].size(); i++) {
+      int to = G[from][i];
       degree[to]--;
 
       if (degree[to] == 0) {
@@ -48,6 +48,29 @@ vector<int> tsort(int v, vector<int> g[], bool zero_index = false) {
 }
 
 int main() {
+  int V, E;
+  cin >> V >> E;
+
+  Graph G(V);
+
+  int s, t;
+
+  for (int i = 0; i < E; ++i) {
+    cin >> s >> t;
+
+    G[s].push_back(t);
+  }
+
+  vector<int> res = tsort(G, 0, V);
+
+  if (res.size() != V) {
+    // tsort failed.
+    cout << -1 << endl;
+  }
+
+  for (int i = 0; i < res.size(); ++i) {
+    cout << res[i] << endl;
+  }
 
   return 0;
 }

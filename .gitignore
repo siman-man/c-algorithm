@@ -1,2 +1,4 @@
+add.cpp
 *.out
 .idea
+*.in

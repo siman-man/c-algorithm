@@ -12,12 +12,12 @@
 using namespace std;
 typedef long long ll;
 
-class BIT {
+class BinaryIndexTree {
 public:
   vector <ll> bit;
   int N;
 
-  BIT(int n) {
+  BinaryIndexTree(int n) {
     N = n;
 
     for (int i = 0; i <= N; ++i) {
@@ -48,7 +48,7 @@ int main() {
   int N, Q;
   cin >> N >> Q;
 
-  BIT bit(N);
+  BinaryIndexTree bit(N);
 
   int a, t, x;
   for (int i = 1; i <= N; ++i) {

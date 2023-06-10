@@ -10,6 +10,10 @@ int n, k;
 int _rank[MAX_N + 1];
 int tmp[MAX_N + 1];
 
+string rotate(string str) {
+  return str.substr(1) + str[0];
+}
+
 bool compare_sa(int i, int j) {
   if (_rank[i] != _rank[j]) {
     return _rank[i] < _rank[j];
@@ -40,6 +44,23 @@ void construct_sa(string S, int *sa) {
       _rank[i] = tmp[i];
     }
   }
+}
+
+bool contain(string S, int *sa, string T) {
+  int a = 0;
+  int b = S.size();
+
+  while (b - a > 0) {
+    int c = (a + b) / 2;
+
+    if (S.compare(sa[c], T.size(), T) < 0) {
+      a = c;
+    } else {
+      b = c;
+    }
+  }
+
+  return S.compare(sa[b], T.length(), T) == 0;
 }
 
 void construct_lcp(string S, int *sa, int *lcp) {

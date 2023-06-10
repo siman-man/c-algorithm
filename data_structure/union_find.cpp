@@ -16,23 +16,23 @@ const int MAX_N = 200000;
 
 class UnionFind {
 public:
-  vector<int> parent;
-  vector<int> rank;
+  vector<int> _parent;
+  vector<int> _rank;
   vector<int> _size;
 
-  void init(int n) {
+  UnionFind(int n) {
     for (int i = 0; i < n; ++i) {
-      parent.push_back(i);
-      rank.push_back(0);
+      _parent.push_back(i);
+      _rank.push_back(0);
       _size.push_back(1);
     }
   }
 
   int find(int x) {
-    if (parent[x] == x) {
+    if (_parent[x] == x) {
       return x;
     } else {
-      return parent[x] = find(parent[x]);
+      return _parent[x] = find(_parent[x]);
     }
   }
 
@@ -41,13 +41,13 @@ public:
     y = find(y);
     if (x == y) return;
 
-    if (rank[x] < rank[y]) {
-      parent[x] = y;
+    if (_rank[x] < _rank[y]) {
+      _parent[x] = y;
       _size[y] += _size[x];
     } else {
-      parent[y] = x;
+      _parent[y] = x;
       _size[x] += _size[y];
-      if (rank[x] == rank[y]) ++rank[x];
+      if (_rank[x] == _rank[y]) ++_rank[x];
     }
   }
 
@@ -74,8 +74,6 @@ int main() {
     if (t == 0) {
       uf.unite(u, v);
     } else {
-      cout << "size " << uf.size(u) << endl;
-
       if (uf.same(u, v)) {
         cout << 1 << endl;
       } else {

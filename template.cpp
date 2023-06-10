@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
-#include <limits.h>
+#include <climits>
 #include <map>
 #include <queue>
 #include <set>
-#include <string.h>
+#include <cstring>
 #include <vector>
 
 using namespace std;

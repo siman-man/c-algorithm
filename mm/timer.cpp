@@ -3,6 +3,31 @@
 
 using namespace std;
 
+class CycleTimer {
+public:
+  CycleTimer() {
+    begin();
+  }
+
+  double get_time() {
+    return (double) (get_cycle() - _begin_cycle) / CYCLE_PER_SEC;
+  }
+
+  void begin() {
+    _begin_cycle = get_cycle();
+  }
+
+private:
+  const uint64_t CYCLE_PER_SEC = 2700000000;
+  uint64_t _begin_cycle;
+
+  uint64_t get_cycle() {
+    uint64_t low, high;
+    __asm__ volatile ("rdtsc" : "=a" (low), "=d" (high));
+    return low | (high << 32);
+  }
+};
+
 class Timer {
 public:
   Timer() {
@@ -30,7 +55,7 @@ private:
 };
 
 int main() {
-  Timer timer;
+  CycleTimer timer;
   uint64_t loop_cnt = 0;
 
   while (timer.get_time() < 1.0) {

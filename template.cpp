@@ -30,6 +30,7 @@ struct Node {
 };
 
 int main() {
+  std::cin.tie(0)->sync_with_stdio(0);
   priority_queue <Node, vector<Node>, greater<Node>> pque;
   cout << fixed << setprecision(10) << 0.12 << endl;
 

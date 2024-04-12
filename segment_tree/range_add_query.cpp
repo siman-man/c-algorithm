@@ -3,110 +3,71 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
-#include <limits.h>
+#include <climits>
 #include <map>
 #include <queue>
 #include <set>
-#include <string.h>
+#include <cstring>
 #include <vector>
 
 using namespace std;
 typedef long long ll;
 
-const int MAX_N = 200'010;
-const ll EMPTY_VALUE = -1;
+const int MAX_N = 100000;
 
-class RangeUpdateQuery {
+class RangeAddQuery {
 public:
-  int N;
-  ll dat[MAX_N];
-  ll lazy[MAX_N];
+  vector <ll> bit0;
+  vector <ll> bit1;
 
-  RangeUpdateQuery(int _N, ll init_value = 0) {
-    this->N = _N;
-
-    for (int i = 0; i < 2 * N; ++i) {
-      dat[i] = init_value;
-      lazy[i] = 0LL;
-    }
+  RangeAddQuery(int N) {
+    bit0.resize(N + 1);
+    bit1.resize(N + 1);
   }
 
-  void update(int l, int r, int x) {
-    _fill_value(l, r, x, 0, 0, N - 1);
+  void update(int l, int r, ll x) {
+    add(bit0, l, -x * (l - 1));
+    add(bit1, l, x);
+    add(bit0, r + 1, x * r);
+    add(bit1, r + 1, -x);
   }
 
-  ll find(int idx) {
-    return _sum(idx, idx, 0, 0, N - 1);
+  ll get(int i) {
+    return get(i, i);
   }
 
-  ll find_min(int l, int r) {
-    return _min(l, r, 0, 0, N - 1);
+  ll get(int l, int r) {
+    ll res = 0;
+    res += sum(bit0, r) + sum(bit1, r) * r;
+    res -= sum(bit0, l - 1) + sum(bit1, l - 1) * (l - 1);
+
+    return res;
   }
 
 private:
-  void _fill_value(int a, int b, ll x, int idx, int l, int r) {
-    if (r < a || b < l) return;
-
-    _evaluate(idx, l, r);
-
-    if (a <= l && r <= b) {
-      lazy[idx] = x;
-    } else {
-      _fill_value(a, b, x, idx * 2 + 1, l, (l + r) / 2);
-      _fill_value(a, b, x, idx * 2 + 2, (l + r) / 2 + 1, r);
+  void add(vector <ll> &b, int i, ll v) {
+    while (i <= MAX_N) {
+      b[i] += v;
+      i += i & -i;
     }
   }
 
-  void _evaluate(int idx, int l, int r) {
-    if (lazy[idx] == EMPTY_VALUE) {
-      return;
+  ll sum(vector <ll> &b, int i) {
+    ll s = 0;
+    while (i > 0) {
+      s += b[i];
+      i -= i & -i;
     }
-
-    dat[idx] = lazy[idx];
-
-    if (r - l > 0) {
-      lazy[2 * idx + 1] = lazy[idx];
-      lazy[2 * idx + 2] = lazy[idx];
-    }
-
-    lazy[idx] = EMPTY_VALUE;
-  }
-
-  ll _sum(int a, int b, int idx, int l, int r) {
-    if (r < a || b < l) {
-      return 0LL;
-    }
-
-    _evaluate(idx, l, r);
-
-    if (a <= l && r <= b) {
-      return dat[idx];
-    } else {
-      ll value_left = _sum(a, b, idx * 2 + 1, l, (l + r) / 2);
-      ll value_right = _sum(a, b, idx * 2 + 2, (l + r) / 2 + 1, r);
-
-      return value_left + value_right;
-    }
-  }
-
-  ll _min(int a, int b, int idx, int l, int r) {
-    if (r < a || b < l) {
-      return 0LL;
-    }
-
-    _evaluate(idx, l, r);
-
-    if (a <= l && r <= b) {
-      return dat[idx];
-    } else {
-      ll value_left = _sum(a, b, idx * 2 + 1, l, (l + r) / 2);
-      ll value_right = _sum(a, b, idx * 2 + 2, (l + r) / 2 + 1, r);
-
-      return (value_left < value_right) ? value_left : value_right;
-    }
+    return s;
   }
 };
 
 int main() {
+  RangeAddQuery raq(MAX_N);
+
+  cout << raq.get(1, MAX_N) << endl;
+  raq.update(1, 10, 5);
+  cout << raq.get(2) << endl;
+
   return 0;
 }

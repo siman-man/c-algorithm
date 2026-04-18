@@ -36,11 +36,11 @@ public:
   }
 
   void begin() {
-    _start_at = chrono::system_clock::now();
+    _start_at = chrono::steady_clock::now();
   }
 
   double get_time() {
-    chrono::system_clock::time_point end_at = chrono::system_clock::now();
+    chrono::steady_clock::time_point end_at = chrono::steady_clock::now();
     _duration = chrono::duration_cast<std::chrono::nanoseconds>(end_at - _start_at).count();
     return _duration / 1000000000.0;
   }
@@ -50,7 +50,7 @@ public:
   }
 
 private:
-  chrono::system_clock::time_point _start_at;
+  chrono::steady_clock::time_point _start_at;
   double _duration;
 };
 
